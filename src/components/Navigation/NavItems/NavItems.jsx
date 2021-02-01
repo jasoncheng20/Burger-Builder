@@ -1,11 +1,11 @@
 import React from "react";
-import NavLink from "./NavLink";
+import NaviLink from "./NaviLink";
 import classes from "./NavItems.module.css";
 
-const NavItems = (props) => (
+const NavItems = () => (
     <ul className={classes.NavItems}>
-        <NavLink link="/" active>Burger Builder</NavLink>
-        <NavLink link="/">Checkout</NavLink>
+        <NaviLink link="/">Burger Builder</NaviLink>
+        <NaviLink link="/orders">Orders</NaviLink>
     </ul>
 );
 

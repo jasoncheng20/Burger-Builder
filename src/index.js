@@ -1,14 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
-import {reducer} from "./store/reducer";
+import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import axios from "axios";
+import thunk from "redux-thunk";
+
+import { burgerBuilderReducer } from "./store/reducers/burgerBuilderReducer";
+import { orderReducer } from "./store/reducers/orderReducer";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import axios from "axios";
 
-const store = createStore(reducer);
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const reducer = combineReducers({
+  burgerBuilder : burgerBuilderReducer,
+  order: orderReducer,
+});
+
+const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
 
 axios.defaults.baseURL =
   "https://react-burger-builder-341f6-default-rtdb.firebaseio.com";

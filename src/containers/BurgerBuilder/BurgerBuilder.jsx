@@ -8,23 +8,17 @@ import BuildControls from "../../components/Burger/BuildControls";
 import Modal from "../../components/UI/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary";
 import Spinner from "../../components/UI/Spinner";
-import WithErrorHandler from "../../hoc/withErrorHandler";
-import { ADD_INGREDIENT, DELETE_INGREDIENT } from "../../store/actions";
+import * as actions from "../../store/actions/";
+import withErrorHandler from "../../hoc/withErrorHandler";
 
 class BurgerBuilder extends Component {
   state = {
     purchasing: false,
     loading: false,
-    error: false,
   };
 
   componentDidMount() {
-    // axios
-    //   .get("/ingredients.json")
-    //   .then((response) => {
-    //     this.setState({ ingredients: response.data });
-    //   })
-    //   .catch((error) => this.setState({ error }));
+    this.props.fetchIngredients();
   }
 
   updatePurchaseState = (ingredients) => {
@@ -43,6 +37,7 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
+    this.props.onInitPurchase()
     this.props.history.push("/checkout");
   };
 
@@ -53,7 +48,7 @@ class BurgerBuilder extends Component {
     }
 
     let orderSummary = null;
-    let burger = this.state.error ? (
+    let burger = this.props.error ? (
       <p>Ingredients can't be loaded!</p>
     ) : (
       <Spinner />
@@ -100,20 +95,21 @@ class BurgerBuilder extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  ingred: state.ingredients,
-  totalPrice: state.price,
+  ingred: state.burgerBuilder.ingredients,
+  totalPrice: state.burgerBuilder.price,
+  error: state.burgerBuilder.error,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addIngredient: (topping) =>
-      dispatch({ type: ADD_INGREDIENT, topping: topping }),
-    removeIngredient: (topping) =>
-      dispatch({ type: DELETE_INGREDIENT, topping: topping }),
+    addIngredient: (topping) => dispatch(actions.addIngredient(topping)),
+    removeIngredient: (topping) => dispatch(actions.removeIngredient(topping)),
+    fetchIngredients: () => dispatch(actions.initIngredients()),
+    onInitPurchase: () => dispatch(actions.purchaseInit()),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(WithErrorHandler(BurgerBuilder, axios));
+)(withErrorHandler(BurgerBuilder, axios));

@@ -5,7 +5,8 @@ import classes from "./NavItems.module.css";
 const NavItems = (props) => (
   <ul className={classes.NavItems}>
     <NaviLink link="/">Burger Builder</NaviLink>
-    <NaviLink link="/orders">Orders</NaviLink>
+
+    {props.isAuth && <NaviLink link="/orders">My Orders</NaviLink>}
     {!props.isAuth ? (
       <NaviLink link="/auth">Sign In</NaviLink>
     ) : (

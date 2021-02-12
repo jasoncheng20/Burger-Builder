@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import Input from "../../components/UI/Input";
 import Button from "../../components/UI/Button";
@@ -41,6 +42,12 @@ class Auth extends Component {
     },
     isSignup: true,
   };
+
+  componentDidMount() {
+    if (!this.props.building && this.props.authRedirect !== "/") {
+      this.props.setAuthRedirectPath()
+    }
+  }
 
   checkValidity = (value, rules) => {
     let isValid = true;
@@ -137,6 +144,7 @@ class Auth extends Component {
             ? "Log In as Existing User"
             : "Create an Account"}
         </Button>
+        {this.props.isAuth && <Redirect to={this.props.authRedirect} />}
       </div>
     );
   }
@@ -146,12 +154,16 @@ const mapStateToProps = (state) => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
+    isAuth: state.auth.token !== null,
+    authRedirect: state.auth.authRedirect,
+    building: state.burgerBuilder.building,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     auth: (email, password) => dispatch(actionTypes.auth(email, password)),
+    setAuthRedirectPath: () => dispatch(actionTypes.setAuthRedirectPath("/")),
   };
 };
 

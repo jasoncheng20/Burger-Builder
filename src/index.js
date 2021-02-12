@@ -7,6 +7,8 @@ import thunk from "redux-thunk";
 
 import { burgerBuilderReducer } from "./store/reducers/burgerBuilderReducer";
 import { orderReducer } from "./store/reducers/orderReducer";
+import { authReducer } from "./store/reducers/authReducer";
+import ThemeContextProvider from "./context/ThemeContext";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
@@ -14,8 +16,9 @@ import reportWebVitals from "./reportWebVitals";
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const reducer = combineReducers({
-  burgerBuilder : burgerBuilderReducer,
+  burgerBuilder: burgerBuilderReducer,
   order: orderReducer,
+  auth: authReducer,
 });
 
 const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
@@ -24,11 +27,13 @@ axios.defaults.baseURL =
   "https://react-burger-builder-341f6-default-rtdb.firebaseio.com";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
+  <ThemeContextProvider>
+    <React.StrictMode>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </React.StrictMode>
+  </ThemeContextProvider>,
   document.getElementById("root")
 );
 
